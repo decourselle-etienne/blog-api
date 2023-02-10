@@ -8,7 +8,7 @@ router.post("/login", login);
 
 router.post("/register", register);
 router.get("/verify", authenticate, (req, res) => {
-    res.status(200).json({ id: req.id, email: req.email });
+    res.status(200).json({ id: req.account, email: req.email });
 });
 router.post("/forgot-password", (req, res) => {
     const { email, password } = req.body;
