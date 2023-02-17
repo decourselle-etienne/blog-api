@@ -20,22 +20,23 @@ router.get("/posts", getAll);
 // @route   GET /blog/posts/:id
 router.get("/posts/:id", postExistsMiddleware, getById);
 
-// @route   POST /blog/posts
-router.post("/posts", contentBodyMiddleware, createPost);
+// @route   POST /blog/posts/:id
+// create a post with a specific profile
+router.post("/posts/:profileID", contentBodyMiddleware, createPost);
 
-// @route   PUT /blog/posts/:id
-router.patch("/posts/:id", postExistsMiddleware, contentBodyMiddleware, updatePost);
+// @route   PUT /blog/posts/:profileID/:id
+router.patch("/posts/:profileID/:id", postExistsMiddleware, contentBodyMiddleware, updatePost);
 
 // @route   DELETE api/blog/posts/:id
-router.delete("/posts/:id", postExistsMiddleware, deletePost);
+router.delete("/posts/:profileID/:id", postExistsMiddleware, deletePost);
 
 // @route   GET /blog/posts/:id/comments
 router.get("/posts/:id/comments", postExistsMiddleware, getAllComments);
 
 // @route   POST /blog/posts/:id/comments
-router.post("/posts/:id/comments", postExistsMiddleware, createComment);
+router.post("/posts/:id/comments/:profileID", postExistsMiddleware, createComment);
 
 // @route   DELETE /blog/comments/:commentId
-router.delete("/comments/:id", deleteComment);
+router.delete("/comments/:profileID/:id", deleteComment);
 
 module.exports = router;

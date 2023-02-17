@@ -6,10 +6,11 @@ const { getUrl } = require("../../../utils/getter");
 const { removeFields } = require("../../../utils/remover");
 
 const createPost = async (req, res) => {
-    //TODO
+
     const post = new Post({
         title: req.body.title,
         content: req.body.content,
+        owner: req.params.profileID
     });
 
     try {
@@ -24,7 +25,15 @@ const createPost = async (req, res) => {
 
 const deletePost = async (req, res) => {
     try {
-        await Promise.all([Post.deleteOne({ id: req.post.id }), Comment.deleteMany({ post: req.params.id })]);
+        const postToFind = await Post.findOne({id: req.post.id, owner: req.params.profileID})
+        if(!postToFind) {
+            res.status(400).json("You can't delete this post")
+        }
+
+        await Promise.all([
+            Post.deleteOne({ id: req.post.id }), 
+            Comment.deleteMany({ post: req.params.id })
+        ]);
 
         res.status(204).end();
     } catch (err) {
@@ -70,9 +79,8 @@ const getById = async (req, res) => {
 };
 
 const updatePost = async (req, res) => {
-    const { id } = req.params;
+    const { id, profileID } = req.params;
 
-    //TODO
     const update = {
         title: req.body.title,
         content: req.body.content,
@@ -80,6 +88,12 @@ const updatePost = async (req, res) => {
     };
 
     try {
+
+        const postToFind = await Post.findOne({id: id, owner: profileID});
+        if (!postToFind) {
+            res.status(400).json("You can't update this post")
+        }
+
         const post = await Post.findOneAndUpdate({ id }, update, {
             new: true,
             runValidators: true,

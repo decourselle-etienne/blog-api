@@ -8,8 +8,7 @@ const createComment = async (req, res) => {
     const { id } = req.params;
 
     try {
-        //TODO
-        const comment = new Comment({ ...req.body, id_post: id });
+        const comment = new Comment({ ...req.body, id_post: id, owner: req.params.profileId});
 
         req.post.commentsCount++;
 
@@ -24,6 +23,11 @@ const createComment = async (req, res) => {
 
 const deleteComment = async (req, res) => {
     try {
+        const commentToFind = await Comment.findOne({id: req.params.id, owner: req.params.profileId})
+        if (!commentToFind) {
+            res.status(400).json("You can't delete this comment")
+        }
+
         const comment = await Comment.findOneAndDelete({
             id: req.params.id,
         }).lean();
